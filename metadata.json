@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Id": "org.kde.plasma.desktop-status-bar",
+        "Name": "Desktop Status Bar",
+        "Description": "i3-style virtual desktop status bar",
+        "Icon": "preferences-desktop-virtual",
+        "Authors": [
+            {
+                "Name": "skj"
+            }
+        ],
+        "Category": "Windows and Tasks",
+        "License": "GPL-3.0+"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.1",
+    "X-Plasma-Provides": ["org.kde.plasma.virtualdesktops"],
+    "X-Plasma-FormFactors": ["panel", "horizontal-panel", "vertical-panel"]
+}
