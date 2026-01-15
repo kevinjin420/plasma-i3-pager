@@ -3,38 +3,21 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.private.pager
-import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id: root
 
-    readonly property int boxWidth: Plasmoid.configuration.boxWidth
-    readonly property int boxHeight: Plasmoid.configuration.boxHeight
-    readonly property int boxSpacing: Plasmoid.configuration.spacing
-    readonly property int paddingH: Plasmoid.configuration.paddingHorizontal
-    readonly property int paddingV: Plasmoid.configuration.paddingVertical
     readonly property int desktopCount: pagerModel.count
     readonly property bool isHorizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
 
     readonly property int contentWidth: isHorizontal
-        ? (boxWidth * desktopCount) + (boxSpacing * Math.max(0, desktopCount - 1))
-        : boxWidth
+        ? (Plasmoid.configuration.boxWidth * desktopCount) + (Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1))
+        : Plasmoid.configuration.boxWidth
     readonly property int contentHeight: isHorizontal
-        ? boxHeight
-        : (boxHeight * desktopCount) + (boxSpacing * Math.max(0, desktopCount - 1))
-    readonly property int totalWidth: contentWidth + (paddingH * 2)
-    readonly property int totalHeight: contentHeight + (paddingV * 2)
-
-    readonly property int cornerRadius: Plasmoid.configuration.cornerRadius
-    readonly property bool borderEnabled: Plasmoid.configuration.borderEnabled
-    readonly property int borderWidth: Plasmoid.configuration.borderWidth
-    readonly property color borderColorSelected: Plasmoid.configuration.borderColorSelected
-    readonly property color borderColorUnselected: Plasmoid.configuration.borderColorUnselected
-    readonly property bool shadingEnabled: Plasmoid.configuration.shadingEnabled
-    readonly property color shadingColorSelected: Plasmoid.configuration.shadingColorSelected
-    readonly property color shadingColorUnselected: Plasmoid.configuration.shadingColorUnselected
-    readonly property color textColorSelected: Plasmoid.configuration.textColorSelected
-    readonly property color textColorUnselected: Plasmoid.configuration.textColorUnselected
+        ? Plasmoid.configuration.boxHeight
+        : (Plasmoid.configuration.boxHeight * desktopCount) + (Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1))
+    readonly property int totalWidth: contentWidth + (Plasmoid.configuration.paddingHorizontal * 2)
+    readonly property int totalHeight: contentHeight + (Plasmoid.configuration.paddingVertical * 2)
 
     preferredRepresentation: fullRepresentation
 
@@ -58,38 +41,37 @@ PlasmoidItem {
         implicitHeight: root.totalHeight
 
         Grid {
-            id: container
             anchors.centerIn: parent
             columns: root.isHorizontal ? root.desktopCount : 1
             rows: root.isHorizontal ? 1 : root.desktopCount
-            spacing: root.boxSpacing
+            spacing: Plasmoid.configuration.spacing
 
             Repeater {
                 model: pagerModel.count
 
                 Rectangle {
-                    id: desktopBox
-                    width: root.boxWidth
-                    height: root.boxHeight
-                    radius: root.cornerRadius
+                    id: box
+                    width: Plasmoid.configuration.boxWidth
+                    height: Plasmoid.configuration.boxHeight
+                    radius: Plasmoid.configuration.cornerRadius
 
-                    property bool isActive: index === pagerModel.currentPage
+                    property bool active: index === pagerModel.currentPage
 
-                    color: root.shadingEnabled
-                        ? (isActive ? root.shadingColorSelected : root.shadingColorUnselected)
+                    color: Plasmoid.configuration.shadingEnabled
+                        ? (active ? Plasmoid.configuration.shadingColorSelected : Plasmoid.configuration.shadingColorUnselected)
                         : "transparent"
 
-                    border.width: root.borderEnabled ? root.borderWidth : 0
-                    border.color: root.borderEnabled
-                        ? (isActive ? root.borderColorSelected : root.borderColorUnselected)
+                    border.width: Plasmoid.configuration.borderEnabled ? Plasmoid.configuration.borderWidth : 0
+                    border.color: Plasmoid.configuration.borderEnabled
+                        ? (active ? Plasmoid.configuration.borderColorSelected : Plasmoid.configuration.borderColorUnselected)
                         : "transparent"
 
                     Text {
                         anchors.centerIn: parent
                         text: index + 1
-                        color: desktopBox.isActive
-                            ? root.textColorSelected
-                            : root.textColorUnselected
+                        color: box.active
+                            ? Plasmoid.configuration.textColorSelected
+                            : Plasmoid.configuration.textColorUnselected
                         font.pixelSize: Plasmoid.configuration.fontSize
                         font.bold: Plasmoid.configuration.fontBold
                     }
