@@ -7,4 +7,9 @@ ConfigModel {
         icon: "preferences-desktop-color"
         source: "configAppearance.qml"
     }
+    ConfigCategory {
+        name: i18n("Behavior")
+        icon: "preferences-desktop"
+        source: "configBehavior.qml"
+    }
 }

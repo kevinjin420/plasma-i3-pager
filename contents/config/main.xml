@@ -1,61 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
-      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
     <kcfgfile name=""/>
 
     <group name="General">
-        <entry name="boxWidth" type="Int">
-            <default>24</default>
-        </entry>
-        <entry name="boxHeight" type="Int">
-            <default>24</default>
-        </entry>
-        <entry name="spacing" type="Int">
-            <default>4</default>
-        </entry>
-        <entry name="paddingHorizontal" type="Int">
-            <default>0</default>
-        </entry>
-        <entry name="paddingVertical" type="Int">
-            <default>0</default>
-        </entry>
-        <entry name="fontSize" type="Int">
-            <default>12</default>
-        </entry>
-        <entry name="fontBold" type="Bool">
-            <default>false</default>
-        </entry>
-        <entry name="textColorSelected" type="String">
-            <default>#ffffff</default>
-        </entry>
-        <entry name="textColorUnselected" type="String">
-            <default>#eff0f1</default>
-        </entry>
-        <entry name="cornerRadius" type="Int">
-            <default>4</default>
-        </entry>
-        <entry name="borderEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="borderWidth" type="Int">
-            <default>1</default>
-        </entry>
-        <entry name="borderColorSelected" type="String">
-            <default>#3daee9</default>
-        </entry>
-        <entry name="borderColorUnselected" type="String">
-            <default>#76797c</default>
-        </entry>
-        <entry name="shadingEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="shadingColorSelected" type="String">
-            <default>#3daee9</default>
-        </entry>
-        <entry name="shadingColorUnselected" type="String">
-            <default>#31363b</default>
-        </entry>
+        <!-- Dimensions -->
+        <entry name="heightMode" type="Int"><default>0</default></entry>
+        <entry name="boxWidth" type="Int"><default>18</default></entry>
+        <entry name="boxHeight" type="Int"><default>24</default></entry>
+        <entry name="boxPadding" type="Int"><default>2</default></entry>
+        <entry name="spacing" type="Int"><default>4</default></entry>
+
+        <!-- Text -->
+        <entry name="fontSize" type="Int"><default>14</default></entry>
+        <entry name="fontBold" type="Bool"><default>false</default></entry>
+        <entry name="textEnabledSelected" type="Bool"><default>true</default></entry>
+        <entry name="textEnabledUnselected" type="Bool"><default>true</default></entry>
+        <entry name="textColorSelected" type="String"><default>#ffffff</default></entry>
+        <entry name="textColorUnselected" type="String"><default>#ffffff</default></entry>
+
+        <!-- Style -->
+        <entry name="cornerRadius" type="Int"><default>4</default></entry>
+
+        <!-- Border -->
+        <entry name="borderEnabledSelected" type="Bool"><default>true</default></entry>
+        <entry name="borderEnabledUnselected" type="Bool"><default>true</default></entry>
+        <entry name="borderWidth" type="Int"><default>1</default></entry>
+        <entry name="borderColorSelected" type="String"><default>#3daee9</default></entry>
+        <entry name="borderColorUnselected" type="String"><default>#76797c</default></entry>
+
+        <!-- Shading -->
+        <entry name="shadingEnabledSelected" type="Bool"><default>true</default></entry>
+        <entry name="shadingEnabledUnselected" type="Bool"><default>true</default></entry>
+        <entry name="shadingColorSelected" type="String"><default>#3daee9</default></entry>
+        <entry name="shadingColorUnselected" type="String"><default>#31363b</default></entry>
+
+        <!-- Behavior -->
+        <entry name="clickToSwitch" type="Bool"><default>true</default></entry>
+        <entry name="scrollEnabled" type="Bool"><default>true</default></entry>
+        <entry name="scrollWrap" type="Bool"><default>true</default></entry>
+        <entry name="scrollInverted" type="Bool"><default>false</default></entry>
     </group>
 </kcfg>

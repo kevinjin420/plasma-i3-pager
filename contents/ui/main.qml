@@ -9,24 +9,27 @@ PlasmoidItem {
 
     readonly property int desktopCount: pagerModel.count
     readonly property bool isHorizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
+    readonly property bool fillHeight: Plasmoid.configuration.heightMode === 0
+
+    readonly property int boxW: Plasmoid.configuration.boxWidth
+    readonly property int boxH: fillHeight
+        ? Math.max(8, (isHorizontal ? height : width) - Plasmoid.configuration.boxPadding * 2)
+        : Plasmoid.configuration.boxHeight
 
     readonly property int contentWidth: isHorizontal
-        ? (Plasmoid.configuration.boxWidth * desktopCount) + (Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1))
-        : Plasmoid.configuration.boxWidth
+        ? boxW * desktopCount + Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1)
+        : boxW
     readonly property int contentHeight: isHorizontal
-        ? Plasmoid.configuration.boxHeight
-        : (Plasmoid.configuration.boxHeight * desktopCount) + (Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1))
-    readonly property int totalWidth: contentWidth + (Plasmoid.configuration.paddingHorizontal * 2)
-    readonly property int totalHeight: contentHeight + (Plasmoid.configuration.paddingVertical * 2)
+        ? boxH
+        : boxH * desktopCount + Plasmoid.configuration.spacing * Math.max(0, desktopCount - 1)
 
     preferredRepresentation: fullRepresentation
 
-    Layout.minimumWidth: totalWidth
-    Layout.maximumWidth: totalWidth
-    Layout.preferredWidth: totalWidth
-    Layout.minimumHeight: totalHeight
-    Layout.maximumHeight: totalHeight
-    Layout.preferredHeight: totalHeight
+    Layout.minimumWidth: contentWidth
+    Layout.preferredWidth: contentWidth
+    Layout.fillHeight: fillHeight
+    Layout.minimumHeight: fillHeight ? -1 : boxH
+    Layout.preferredHeight: fillHeight ? -1 : boxH
 
     PagerModel {
         id: pagerModel
@@ -37,8 +40,8 @@ PlasmoidItem {
     }
 
     fullRepresentation: Item {
-        implicitWidth: root.totalWidth
-        implicitHeight: root.totalHeight
+        implicitWidth: root.contentWidth
+        implicitHeight: root.contentHeight
 
         Grid {
             anchors.centerIn: parent
@@ -51,34 +54,59 @@ PlasmoidItem {
 
                 Rectangle {
                     id: box
-                    width: Plasmoid.configuration.boxWidth
-                    height: Plasmoid.configuration.boxHeight
-                    radius: Plasmoid.configuration.cornerRadius
+                    required property int index
 
-                    property bool active: index === pagerModel.currentPage
+                    property bool isActive: index === pagerModel.currentPage
+                    property var cfg: Plasmoid.configuration
 
-                    color: Plasmoid.configuration.shadingEnabled
-                        ? (active ? Plasmoid.configuration.shadingColorSelected : Plasmoid.configuration.shadingColorUnselected)
-                        : "transparent"
+                    width: root.boxW
+                    height: root.boxH
+                    radius: cfg.cornerRadius
 
-                    border.width: Plasmoid.configuration.borderEnabled ? Plasmoid.configuration.borderWidth : 0
-                    border.color: Plasmoid.configuration.borderEnabled
-                        ? (active ? Plasmoid.configuration.borderColorSelected : Plasmoid.configuration.borderColorUnselected)
-                        : "transparent"
+                    color: isActive
+                        ? (cfg.shadingEnabledSelected ? cfg.shadingColorSelected : "transparent")
+                        : (cfg.shadingEnabledUnselected ? cfg.shadingColorUnselected : "transparent")
+                    border.width: isActive
+                        ? (cfg.borderEnabledSelected ? cfg.borderWidth : 0)
+                        : (cfg.borderEnabledUnselected ? cfg.borderWidth : 0)
+                    border.color: isActive
+                        ? (cfg.borderEnabledSelected ? cfg.borderColorSelected : "transparent")
+                        : (cfg.borderEnabledUnselected ? cfg.borderColorUnselected : "transparent")
 
                     Text {
                         anchors.centerIn: parent
-                        text: index + 1
-                        color: box.active
-                            ? Plasmoid.configuration.textColorSelected
-                            : Plasmoid.configuration.textColorUnselected
-                        font.pixelSize: Plasmoid.configuration.fontSize
-                        font.bold: Plasmoid.configuration.fontBold
+                        text: box.index + 1
+                        visible: box.isActive ? cfg.textEnabledSelected : cfg.textEnabledUnselected
+                        color: box.isActive ? cfg.textColorSelected : cfg.textColorUnselected
+                        font.pixelSize: cfg.fontSize
+                        font.bold: cfg.fontBold
                     }
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: pagerModel.changePage(index)
+
+                        onClicked: {
+                            if (cfg.clickToSwitch) pagerModel.changePage(box.index)
+                        }
+
+                        onWheel: function(wheel) {
+                            if (!cfg.scrollEnabled) return
+
+                            var delta = cfg.scrollInverted ? -wheel.angleDelta.y : wheel.angleDelta.y
+                            var current = pagerModel.currentPage
+                            var count = pagerModel.count
+                            var next = current
+
+                            if (delta > 0) {
+                                next = current - 1
+                                if (next < 0) next = cfg.scrollWrap ? count - 1 : 0
+                            } else if (delta < 0) {
+                                next = current + 1
+                                if (next >= count) next = cfg.scrollWrap ? 0 : count - 1
+                            }
+
+                            if (next !== current) pagerModel.changePage(next)
+                        }
                     }
                 }
             }
