@@ -6,4 +6,4 @@ if ! kpackagetool6 -t Plasma/Applet -u "$SCRIPT_DIR" 2>/dev/null; then
     kpackagetool6 -t Plasma/Applet -i "$SCRIPT_DIR"
 fi
 
-plasmashell --replace &
+plasmashell --replace > /dev/null &
