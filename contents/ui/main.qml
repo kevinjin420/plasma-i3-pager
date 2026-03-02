@@ -2,12 +2,13 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
-import org.kde.plasma.private.pager
+import org.kde.taskmanager
+import org.kde.plasma.workspace.dbus as DBus
 
 PlasmoidItem {
     id: root
 
-    readonly property int desktopCount: pagerModel.count
+    readonly property int desktopCount: desktopInfo.numberOfDesktops
     readonly property bool isHorizontal: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
     readonly property bool fillHeight: Plasmoid.configuration.heightMode === 0
 
@@ -31,12 +32,18 @@ PlasmoidItem {
     Layout.minimumHeight: fillHeight ? -1 : boxH
     Layout.preferredHeight: fillHeight ? -1 : boxH
 
-    PagerModel {
-        id: pagerModel
-        enabled: true
-        showDesktop: false
-        screenGeometry: Plasmoid.containment.screenGeometry
-        pagerType: PagerModel.VirtualDesktops
+    function switchToDesktop(index) {
+        DBus.SessionBus.asyncCall({
+            "service": "org.kde.KWin",
+            "path": "/KWin",
+            "iface": "org.kde.KWin",
+            "member": "setCurrentDesktop",
+            "arguments": [new DBus.int32(index)]
+        })
+    }
+
+    VirtualDesktopInfo {
+        id: desktopInfo
     }
 
     fullRepresentation: Item {
@@ -50,13 +57,13 @@ PlasmoidItem {
             spacing: Plasmoid.configuration.spacing
 
             Repeater {
-                model: pagerModel.count
+                model: desktopInfo.numberOfDesktops
 
                 Rectangle {
                     id: box
                     required property int index
 
-                    property bool isActive: index === pagerModel.currentPage
+                    property bool isActive: desktopInfo.desktopIds.indexOf(desktopInfo.currentDesktop) === index
                     property var cfg: Plasmoid.configuration
 
                     width: root.boxW
@@ -86,15 +93,15 @@ PlasmoidItem {
                         anchors.fill: parent
 
                         onClicked: {
-                            if (cfg.clickToSwitch) pagerModel.changePage(box.index)
+                            if (cfg.clickToSwitch) switchToDesktop(box.index + 1)
                         }
 
                         onWheel: function(wheel) {
                             if (!cfg.scrollEnabled) return
 
                             var delta = cfg.scrollInverted ? -wheel.angleDelta.y : wheel.angleDelta.y
-                            var current = pagerModel.currentPage
-                            var count = pagerModel.count
+                            var current = desktopInfo.desktopIds.indexOf(desktopInfo.currentDesktop)
+                            var count = desktopInfo.numberOfDesktops
                             var next = current
 
                             if (delta > 0) {
@@ -105,7 +112,7 @@ PlasmoidItem {
                                 if (next >= count) next = cfg.scrollWrap ? 0 : count - 1
                             }
 
-                            if (next !== current) pagerModel.changePage(next)
+                            if (next !== current) switchToDesktop(next + 1)
                         }
                     }
                 }
