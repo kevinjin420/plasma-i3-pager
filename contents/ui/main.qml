@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.taskmanager
-import org.kde.plasma.workspace.dbus as DBus
 
 PlasmoidItem {
     id: root
@@ -33,13 +32,7 @@ PlasmoidItem {
     Layout.preferredHeight: fillHeight ? -1 : boxH
 
     function switchToDesktop(index) {
-        DBus.SessionBus.asyncCall({
-            "service": "org.kde.KWin",
-            "path": "/KWin",
-            "iface": "org.kde.KWin",
-            "member": "setCurrentDesktop",
-            "arguments": [new DBus.int32(index)]
-        })
+        desktopInfo.requestActivate(desktopInfo.desktopIds[index])
     }
 
     VirtualDesktopInfo {
@@ -93,7 +86,7 @@ PlasmoidItem {
                         anchors.fill: parent
 
                         onClicked: {
-                            if (cfg.clickToSwitch) switchToDesktop(box.index + 1)
+                            if (cfg.clickToSwitch) switchToDesktop(box.index)
                         }
 
                         onWheel: function(wheel) {
@@ -112,7 +105,7 @@ PlasmoidItem {
                                 if (next >= count) next = cfg.scrollWrap ? 0 : count - 1
                             }
 
-                            if (next !== current) switchToDesktop(next + 1)
+                            if (next !== current) switchToDesktop(next)
                         }
                     }
                 }
