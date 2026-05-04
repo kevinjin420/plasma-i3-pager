@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.taskmanager
+import org.kde.plasma.workspace.dbus as DBus
 
 PlasmoidItem {
     id: root
@@ -32,11 +33,18 @@ PlasmoidItem {
     Layout.preferredHeight: fillHeight ? -1 : boxH
 
     function switchToDesktop(index) {
-        desktopInfo.requestActivate(desktopInfo.desktopIds[index])
+        kwinVDesktops.properties["current"] = desktopInfo.desktopIds[index]
     }
 
     VirtualDesktopInfo {
         id: desktopInfo
+    }
+
+    DBus.Properties {
+        id: kwinVDesktops
+        service: "org.kde.KWin"
+        path: "/VirtualDesktopManager"
+        iface: "org.kde.KWin.VirtualDesktopManager"
     }
 
     fullRepresentation: Item {
