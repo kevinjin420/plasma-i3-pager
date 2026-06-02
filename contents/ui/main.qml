@@ -33,18 +33,18 @@ PlasmoidItem {
     Layout.preferredHeight: fillHeight ? -1 : boxH
 
     function switchToDesktop(index) {
-        kwinVDesktops.properties["current"] = desktopInfo.desktopIds[index]
+        DBus.SessionBus.asyncCall({
+            service: "org.kde.KWin",
+            path: "/VirtualDesktopManager",
+            iface: "org.freedesktop.DBus.Properties",
+            member: "Set",
+            signature: "ssv",
+            arguments: ["org.kde.KWin.VirtualDesktopManager", "current", desktopInfo.desktopIds[index]]
+        })
     }
 
     VirtualDesktopInfo {
         id: desktopInfo
-    }
-
-    DBus.Properties {
-        id: kwinVDesktops
-        service: "org.kde.KWin"
-        path: "/VirtualDesktopManager"
-        iface: "org.kde.KWin.VirtualDesktopManager"
     }
 
     fullRepresentation: Item {
