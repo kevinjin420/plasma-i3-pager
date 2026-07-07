@@ -38,8 +38,8 @@ PlasmoidItem {
             path: "/VirtualDesktopManager",
             iface: "org.freedesktop.DBus.Properties",
             member: "Set",
-            signature: "ssv",
-            arguments: ["org.kde.KWin.VirtualDesktopManager", "current", desktopInfo.desktopIds[index]]
+            signature: "(ssv)",
+            arguments: ["org.kde.KWin.VirtualDesktopManager", "current", new DBus.variant(desktopInfo.desktopIds[index])]
         })
     }
 
