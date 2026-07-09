@@ -1,0 +1,43 @@
+name: Release plasmoid
+
+on:
+  workflow_dispatch:
+    inputs:
+      major:
+        description: Bump major version
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Publish new release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          new_sha=$(sha256sum desktop-status-bar.plasmoid | cut -d' ' -f1)
+          release_json=$(gh release view --json tagName,assets 2>/dev/null || echo '{"tagName":"v0.0","assets":[]}')
+          latest_tag=$(echo "$release_json" | jq -r '.tagName')
+          prev_sha=$(echo "$release_json" | jq -r '.assets[] | select(.name=="desktop-status-bar.plasmoid") | .digest' | sed 's/^sha256://')
+
+          if [ "$new_sha" = "$prev_sha" ]; then
+            echo "desktop-status-bar.plasmoid unchanged since latest release, skipping."
+            exit 0
+          fi
+
+          major=${latest_tag#v}; major=${major%%.*}
+          minor=${latest_tag##*.}
+
+          if [ "${{ inputs.major }}" = "true" ]; then
+            next="v$((major + 1)).0"
+          else
+            next="v${major}.$((minor + 1))"
+          fi
+
+          gh release create "$next" desktop-status-bar.plasmoid --title "$next" --generate-notes
