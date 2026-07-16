@@ -1,8 +1,8 @@
 {
     "KPlugin": {
-        "Id": "org.kde.plasma.desktop-status-bar",
-        "Name": "Desktop Status Bar",
-        "Description": "i3-style virtual desktop status bar",
+        "Id": "org.kevinjin.plasma.i3pager",
+        "Name": "i3 Pager",
+        "Description": "i3-style virtual desktop pager",
         "Icon": "preferences-desktop-virtual",
         "Authors": [
             {

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-zip -r desktop-status-bar.plasmoid contents/ metadata.json
+zip -r plasma-i3-pager.plasmoid contents/ metadata.json

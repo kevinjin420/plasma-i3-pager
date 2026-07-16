@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLASMOID_ID="org.kde.plasma.desktop-status-bar"
+PLASMOID_ID="org.kevinjin.plasma.i3pager"
 CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
 
 # install plasmoid

@@ -21,13 +21,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          new_sha=$(sha256sum desktop-status-bar.plasmoid | cut -d' ' -f1)
+          new_sha=$(sha256sum plasma-i3-pager.plasmoid | cut -d' ' -f1)
           release_json=$(gh release view --json tagName,assets 2>/dev/null || echo '{"tagName":"v0.0","assets":[]}')
           latest_tag=$(echo "$release_json" | jq -r '.tagName')
-          prev_sha=$(echo "$release_json" | jq -r '.assets[] | select(.name=="desktop-status-bar.plasmoid") | .digest' | sed 's/^sha256://')
+          prev_sha=$(echo "$release_json" | jq -r '.assets[] | select(.name=="plasma-i3-pager.plasmoid") | .digest' | sed 's/^sha256://')
 
           if [ "$new_sha" = "$prev_sha" ]; then
-            echo "desktop-status-bar.plasmoid unchanged since latest release, skipping."
+            echo "plasma-i3-pager.plasmoid unchanged since latest release, skipping."
             exit 0
           fi
 
@@ -40,4 +40,4 @@ jobs:
             next="v${major}.$((minor + 1))"
           fi
 
-          gh release create "$next" desktop-status-bar.plasmoid --title "$next" --generate-notes
+          gh release create "$next" plasma-i3-pager.plasmoid --title "$next" --generate-notes
