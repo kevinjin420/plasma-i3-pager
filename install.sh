@@ -34,8 +34,9 @@ while IFS= read -r line; do
 done < "$CONFIG"
 
 if [ -n "$EXISTING_ID" ] && grep "AppletOrder=" "$CONFIG" | grep -qE "(^|;)$EXISTING_ID(;|$)"; then
-    echo "Already installed and in panel, skipping."
-    systemctl --user start plasma-plasmashell.service
+    echo "Already installed and in panel; skipping config, reloading plasmashell..."
+    systemctl --user restart plasma-plasmashell.service
+    echo "Done."
     exit 0
 fi
 
@@ -112,9 +113,7 @@ kwriteconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
 
 echo "AppletOrder: $NEW_ORDER"
 
-# --replace handles both suspend and replacing plasmashell
 echo "Restarting plasmashell..."
-plasmashell --replace > /dev/null 2>&1 &
-disown
+systemctl --user restart plasma-plasmashell.service
 
 echo "Done."
